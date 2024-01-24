@@ -18,4 +18,12 @@
 *)
 
 let is_prime (n : int) : bool =
+   let rec counter n i =
+      if i = n then true
+      else if n mod i = 0 then false
+      else counter n (i+1)
+   in
+   if n < 2 then false
+   else counter n 2
+   
   (* YOUR CODE GOES HERE *)

@@ -10,7 +10,6 @@
    sqrt 9 = 3 
    sqrt 100 = 10
 
-   f
 
    Examples without whole square roots:
    sqrt 2 = 2        (smallest number i such that 2 <= i * i is 2)
@@ -20,4 +19,5 @@
 *)
 
 let sqrt (n : int) : int =
+   n * n;;
   (* YOUR CODE GOES HERE *)
