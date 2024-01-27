@@ -31,7 +31,7 @@
 
    Examples:
    let _ = assert (block_text "ABCDEFGHIJ" 0 3 = "ABC\nDEF\nGHI\nJ")
-   let _ = assert (block_text "ABCDEFGHIJ" 2 3 = "AB\nCD\nEF\nGH\nIJ")
+   let _ = assert (block_text2 "ABCDEFGHIJ" 2 3 = "AB\nCD\nEF\nGH\nIJ")
    let _ = assert (block_text "ABCDEFGHIJ" 0 4 = "ABCD\nEFGH\nIJ")
    let _ = assert (block_text "ABDFEFGHIJ" 3 4 = "ABCD\nEFGH\nIJ")
 
@@ -39,13 +39,13 @@
 
  let block_text (s : string) (min_width : int) (max_width : int) : string =
   let rec counter s new_string min_width max_width=
-    let last_chunk s min_width =
-      String.sub s (String.length s - min_width) min_width
+    let first_chunk s min_width =
+      String.sub s 0 min_width
     in 
-    if (String.length s <= max_width) then s^"\n"^new_string
-    else counter (String.sub s 0 (String.length s - min_width)) ((last_chunk s min_width)^"\n"^new_string) min_width max_width
+    if (String.length s <= max_width) then new_string^"\n"^s
+    else if (String.length new_string) < 1 then counter (String.sub s (min_width) (String.length s  - min_width)) ((first_chunk s min_width)) min_width max_width
+    else counter (String.sub s (min_width) (String.length s  - min_width)) ((new_string^"\n"^first_chunk s min_width)) min_width max_width
   in
   if (String.length s) < max_width then s
-  else if (min_width = 0) then counter (String.sub s 0 (String.length s - 1)) (String.sub s (String.length s - 1) 1) 1 max_width
-  else counter (String.sub s 0 (String.length s - min_width)) (String.sub s (String.length s - min_width) min_width) min_width max_width
-
+  else if (min_width = 0) then counter s "" 1 max_width
+  else counter s "" min_width max_width
