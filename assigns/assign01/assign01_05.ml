@@ -37,5 +37,15 @@
 
  *)
 
-let block_text (s : string) (min_width : int) (max_width : int) : string =
-  assert false (* REMOVE THIS LINE AND FILL IN YOUR SOLUTION *)
+ let block_text (s : string) (min_width : int) (max_width : int) : string =
+  let rec counter s new_string min_width max_width=
+    let last_chunk s min_width =
+      String.sub s (String.length s - min_width) min_width
+    in 
+    if (String.length s <= max_width) then s^"\n"^new_string
+    else counter (String.sub s 0 (String.length s - min_width)) ((last_chunk s min_width)^"\n"^new_string) min_width max_width
+  in
+  if (String.length s) < max_width then s
+  else if (min_width = 0) then counter (String.sub s 0 (String.length s - 1)) (String.sub s (String.length s - 1) 1) 1 max_width
+  else counter (String.sub s 0 (String.length s - min_width)) (String.sub s (String.length s - min_width) min_width) min_width max_width
+

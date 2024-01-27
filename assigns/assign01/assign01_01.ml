@@ -22,4 +22,4 @@
  *)
 
 let string_rev (s : string) : string =
-  assert false (* REMOVE THIS LINE AND FILL IN YOUR SOLUTION *)
+  String.fold_left (fun new_string last_char -> Char.escaped last_char^new_string) "" s
