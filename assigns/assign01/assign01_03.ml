@@ -24,4 +24,10 @@
  *)
 
 let fast_fib (n : int) : int =
-  assert false (* REMOVE THIS LINE AND FILL IN YOUR SOLUTION *)
+  let rec counter n i l sl=
+    if n = i then l + sl
+    else counter n (i+1) (l+sl) l
+  in 
+  if n = 0 then 1
+  else if n = 1 then 1
+  else counter n 2 1 1 

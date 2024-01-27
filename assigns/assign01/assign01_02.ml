@@ -15,4 +15,11 @@
  *)
 
 let is_perfect (n : int) : bool =
-  assert false (* REMOVE THIS LINE AND FILL IN YOUR SOLUTION *)
+  let rec counter n i s =
+    if (s = n && i = n) then true
+    else if i = n then false
+    else if n mod i = 0 then counter n (i+1) (s+i)
+    else counter n (i+1) s
+  in
+  if n < 2 then true
+  else counter n 2 1
