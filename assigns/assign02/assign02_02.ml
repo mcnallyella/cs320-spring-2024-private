@@ -30,11 +30,16 @@ type recipe = {
 }
 
 let recs_by_ingrs (l : recipe list) (s : ingr list) : recipe list =
+  (* loops through all ingredients in recipe to see if they are in s
+     returns false if 1 or more ingr are not in s
+      returns true if all ingr are in s *)
   let rec loop_ingr_in_rec ingr_list =
     match ingr_list with
     | [] -> true
     | head::tail -> if (List.mem head s = false) then false else loop_ingr_in_rec tail
   in 
+  (* loops through all recipes in l
+     returns a list of all recipes that can be made with ingrs in s *)
   let rec loop_rec rec_list new_rec_list = 
     match rec_list with
     | [] -> List.rev new_rec_list 

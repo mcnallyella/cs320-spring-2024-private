@@ -24,5 +24,24 @@ type temp
   = Hot of int
   | Icy of int
 
+let int_of_temp t =
+  match t with 
+  | Hot i -> i
+  | Icy i -> i
+
 let reduce (l : temp list) : temp list =
-  assert false (* TODO *)
+  (* loops through list and deletes any matching values that are next to each other *)
+  let rec loop_list (list : temp list) : temp list =
+    match list with
+    | [] -> list
+    | [head] -> list 
+    | head1::head2::tail -> if (int_of_temp head1) = (int_of_temp head2) then loop_list tail else head1::loop_list (head2::tail) 
+  in 
+  (* loops through list again and again until no matching values are next to each other *)
+  let rec loop_loop list =
+    let new_list = loop_list list
+    in 
+    if list = new_list then new_list
+    else loop_loop new_list
+  in 
+  loop_loop l
