@@ -54,9 +54,6 @@ type user = {
   recent_posts : post list ;
 }
 
-let update_recent (u : user) (time : int) (stale : int) : user =
-  assert false (* TODO *)
-
 let p t = {title="";content="";timestamp=t}
 let mk op rp = {
   username = "" ;
@@ -71,3 +68,28 @@ let mk op rp = {
   old_posts = op;
   recent_posts = rp;
 }
+
+let update_recent (u : user) (time : int) (stale : int) : user =
+  let cutoff_time = time - stale 
+in
+(* loops through user.recent_posts and returns list of old posts *)
+  let rec loop_recent_old recent_posts cutoff new_list =
+    match recent_posts with
+    | [] -> new_list
+    | post::tail ->
+        if post.timestamp <= cutoff then loop_recent_old tail cutoff (post::new_list)
+        else loop_recent_old tail cutoff new_list
+  in
+  let new_list_old_sorted = loop_recent_old u.recent_posts cutoff_time [] 
+in
+(* loops through user.recent_posts and returns list of recent posts after cutoff *)
+  let rec loop_recent recent_posts cutoff new_list =
+    match recent_posts with
+    | [] -> new_list
+    | post::tail ->
+        if post.timestamp > cutoff then loop_recent tail cutoff (post::new_list)
+        else loop_recent tail cutoff new_list
+  in
+  let new_list_recent_sorted = loop_recent u.recent_posts cutoff_time [] 
+in
+  mk (List.rev new_list_old_sorted @ u.old_posts) (List.rev new_list_recent_sorted)
