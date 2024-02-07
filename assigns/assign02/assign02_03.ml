@@ -78,7 +78,10 @@ in
   in
   let new_list_recent_sorted = loop_recent u.recent_posts cutoff_time [] 
 in
-  mk (List.rev new_list_old_sorted @ u.old_posts) (List.rev new_list_recent_sorted)
+{u with
+    old_posts = List.rev new_list_old_sorted @ u.old_posts;
+    recent_posts = List.rev new_list_recent_sorted}
+  (* mk (List.rev new_list_old_sorted @ u.old_posts) (List.rev new_list_recent_sorted) *)
 
   let p t = {title="";content="";timestamp=t}
   let mk op rp = {
