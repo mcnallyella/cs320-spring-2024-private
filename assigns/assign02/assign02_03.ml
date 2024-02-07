@@ -54,20 +54,6 @@ type user = {
   recent_posts : post list ;
 }
 
-let p t = {title="";content="";timestamp=t}
-let mk op rp = {
-  username = "" ;
-  email = "" ;
-  time_joined = 0 ;
-  is_paid_user = true ;
-  balance=0 ;
-  next_payment_time = 0;
-  is_paused = true ;
-  num_followers = 0 ;
-  num_likes  = 0 ;
-  old_posts = op;
-  recent_posts = rp;
-}
 
 let update_recent (u : user) (time : int) (stale : int) : user =
   let cutoff_time = time - stale 
@@ -93,3 +79,18 @@ in
   let new_list_recent_sorted = loop_recent u.recent_posts cutoff_time [] 
 in
   mk (List.rev new_list_old_sorted @ u.old_posts) (List.rev new_list_recent_sorted)
+
+  let p t = {title="";content="";timestamp=t}
+  let mk op rp = {
+    username = "" ;
+    email = "" ;
+    time_joined = 0 ;
+    is_paid_user = true ;
+    balance=0 ;
+    next_payment_time = 0;
+    is_paused = true ;
+    num_followers = 0 ;
+    num_likes  = 0 ;
+    old_posts = op;
+    recent_posts = rp;
+  }
