@@ -49,6 +49,7 @@ type point = {
 let rec all_paths (len : int) (stp : point) (endp : point) : (dir * int) list list =
   if len = 0 then [[]]
   else if len = 1 then []
-  else if abs(endp.x - next_point.x) + abs(endp.y - next_point.y) <= len then []
+  (* too short. cannot make path *)
+  else if abs(endp.x - next_point.x) + abs(endp.y - next_point.y) > len then []
   else []
   
