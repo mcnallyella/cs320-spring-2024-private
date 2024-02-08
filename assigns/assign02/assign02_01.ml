@@ -41,7 +41,8 @@ type int_or_string
       | [] -> 
         (match string_list, int_list with 
         | [], [] -> new_list 
-        | _ -> if string_list = [] then new_list else StringList (List.rev string_list) :: new_list 
-        | _ -> if int_list = [] then new_list else IntList (List.rev int_list) :: new_list)
+        | _ -> if int_list = [] then 
+          (if string_list = [] then new_list else StringList (List.rev string_list) :: new_list ) 
+          else IntList (List.rev int_list) :: new_list)
     in
     List.rev (loop_list l [] [] [])
