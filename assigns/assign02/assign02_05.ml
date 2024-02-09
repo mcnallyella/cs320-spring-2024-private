@@ -46,10 +46,22 @@ type point = {
   y : int ;
 }
 
+let move stp dir =
+  match dir with
+  | N -> { stp with y = stp.y + 1 }
+  | S -> { stp with y = stp.y - 1 }
+  | E -> { stp with x = stp.x + 1 }
+  | W -> { stp with x = stp.x - 1 }
+
 let rec all_paths (len : int) (stp : point) (endp : point) : (dir * int) list list =
+  let loop current_point end_point steps_left dist_from_endp_x dist_from_endp_x= 
+   []
+in
   if len = 0 then [[]]
   else if len = 1 then []
   (* too short. cannot make path *)
-  else if abs(endp.x - next_point.x) + abs(endp.y - next_point.y) > len then []
-  else []
+  else if abs(endp.x - stp.x) + abs(endp.y - stp.y) > len then []
+  else loop stp endp len (abs(endp.x - stp.x)) (abs(endp.y - stp.y))
+    
+
   
