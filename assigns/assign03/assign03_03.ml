@@ -49,4 +49,22 @@ type bexp =
   | Or of bexp * bexp
 
 let eval (v : (string * bool) list) (e : bexp) : bool option =
-  assert false (* TODO *)
+  let rec match_func (v : (string * bool) list) (e : bexp) : bool option =
+    match e with
+    | Var x -> List.assoc_opt x v 
+    (* negate e *)
+    | Not e -> 
+      (match match_func v e with  
+               | Some x -> Some (not x)
+               | None -> None)
+    (* join (and) e1 and e2 *)
+    | And (e1, e2) -> 
+      (match match_func v e1, match_func v e2 with  
+                       | Some x1, Some x2 -> Some (x1&&x2)
+                       | _ -> None)
+    (* join (or) e1 and e2 *)
+    | Or (e1, e2) -> 
+      (match match_func v e1, match_func v e2 with  
+                      | Some x1, Some x2 -> Some (x1||x2)
+                      | _ -> None)
+  in match_func v e 

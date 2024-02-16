@@ -26,18 +26,18 @@ type 'a concatlist
   | Concat of 'a concatlist * 'a concatlist
 
 let sort (l : 'a concatlist) : 'a list =
-  let rec find_smallest_index l smallest =
+  let rec find_smallest_index (l : 'a concatlist) (smallest: 'a) : 'a  =
     match l with 
     | [] -> smallest
-    | x::l -> if x <= smallest then find_smallest_index l x else find_smallest_index l smallest
+    | x::tail -> if x <= smallest then find_smallest_index tail x else find_smallest_index tail smallest
   in
-  let remove_element l smallest =
-    List.filter (fun x -> x <> smallest) l
+  let remove_element list smallest =
+    List.filter (fun x -> x <> smallest) list
   in
   let rec make_list l new_list =
     match l with 
     | [] -> new_list
-    | x::l ->  make_list (remove_element l x) ((find_smallest_index l x)::new_list)
+    | x::tail ->  make_list (remove_element tail x) ((find_smallest_index tail x)::new_list)
   in
   match l with
   | Nil -> []

@@ -116,10 +116,33 @@ type 'a matrix = {
 }
 
 let mkMatrix (rs : 'a list list) : ('a matrix, error) result =
-  assert false (* TODO *)
-
+  let rec rows rs new_matrix len_row=
+    match rs with 
+    | [] -> Ok new_matrix
+    | row :: tail when (List.length row) = 0 -> Error ZeroCols
+    | row :: tail when List.length row <> len_row -> Error UnevenRows
+    | row :: tail ->  rows tail {num_rows=new_matrix.num_rows+1; num_cols=new_matrix.num_cols+1; rows=new_matrix.rows@[row]} (List.length row)
+  in
+  match rs with
+  | [] -> Error ZeroRows  
+  | first_row::rs-> rows rs {num_rows=1; num_cols=0; rows=[first_row]}  (List.length first_row)
 let transpose (m : 'a matrix) : 'a matrix =
-  assert false (* TODO *)
+  (* let rec parse_rows (m : 'a matrix) (cols : 'a list list): 'a list list = *)
+  let rec parse_rows rows cols=
+    match rows with 
+    | [] -> cols
+    | row::tail -> parse_rows tail (row::cols)
+    
+    (* {num_rows=m.num_rows-1; num_cols=m.num_cols; rows=tail} row::cols *)
+in 
+let rec create_t (cols : 'a list list) (t : 'a matrix): 'a matrix =
+  match cols with 
+  | [] -> t
+  | col::tail -> create_t tail {num_rows=t.num_rows+1; num_cols=(List.length col); rows=t.rows@[(List.rev col)]} 
+  (* | col::tail -> create_t tail {num_rows=t.num_rows+1; num_cols=(List.length col); rows=col::t.rows} *)
+in 
+create_t (parse_rows m.rows [[]]) {num_rows=0; num_cols=0; rows=[]} 
+
 
 let multiply (m : float matrix) (n : float matrix) : (float matrix, error) result =
-  assert false (* TODO *)
+ 
