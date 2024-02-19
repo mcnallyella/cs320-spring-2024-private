@@ -78,10 +78,23 @@ let walks
     let rec check_paths output_points new_points=
       match output_points with
       | [] -> new_points
-      | [hd] -> output_points
+      | [hd] -> 
+        (match new_points with
+        | [] -> output_points
+        | hd::tl ->  if (g (hd) (List.hd output_points)) = true then new_points@output_points
+        else new_points)
       | hd1::hd2::tl -> 
-        if (g hd1 hd2) = true then check_paths tl (new_points@[hd1;hd2])
-        else check_paths (hd1::tl) (new_points)
+        if (g (hd1) (hd2)) = true then check_paths tl (new_points@[hd1;hd2])
+        else 
+          (match tl with
+          | [] -> 
+            (match new_points with
+            | [] -> output_points
+            | hd::tl ->  if (g (hd) (List.hd output_points)) = true then new_points@output_points
+            else new_points)
+          | hd::tail -> if (g (hd1) (hd)) = true then check_paths tail (new_points@[hd1;hd])
+            else if (g (hd2) (hd)) = true then check_paths tail (new_points@[hd2;hd])
+            else check_paths tail (new_points))
     in check_paths (List.rev (loop_paths paths_starts [])) []
    
    
