@@ -53,4 +53,36 @@ let walks
     (g : 'a -> 'a -> bool)
     (len : int)
     (paths_starts : (('a -> 'a) * 'a) list) : 'a list =
-  assert false (* TODO *)
+
+(* Outline: 
+    loop through each path
+    do length 'len' on path
+    see if end point is in g
+    if so then add to output list *)
+    let rec make_list n x =
+      if n <= 0 then []
+      else x :: make_list (n - 1) x
+    in
+    (* goes through all the functions in order *)
+  let rec find_endpoint functions current_x=
+    match functions with
+    | [] -> current_x
+    | hd :: tl -> find_endpoint tl (hd current_x)
+  in
+    let rec loop_paths paths output_points =
+      match paths with 
+      | [] -> output_points
+      | hd::tl ->  let (path, start) = hd in loop_paths tl output_points@((find_endpoint (make_list len path) start)::output_points)
+      (* find endpoint, check endpoint, add to output_points, loop again*)
+  in 
+    let rec check_paths output_points new_points=
+      match output_points with
+      | [] -> new_points
+      | [hd] -> output_points
+      | hd1::hd2::tl -> 
+        if (g hd1 hd2) = true then check_paths tl (new_points@[hd1;hd2])
+        else check_paths (hd1::tl) (new_points)
+    in check_paths (List.rev (loop_paths paths_starts [])) []
+   
+   
+

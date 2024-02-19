@@ -59,7 +59,12 @@ let rec range i j =
     i :: range (i + 1) j
 
 let for_loop (l : 'a list) (f : 'a -> 'b list) : 'b list =
-  assert false (* TODO *)
+  let rec loop old_list new_concat =
+    match old_list with
+    | [] -> new_concat
+    | hd::tl -> loop tl (new_concat@(f hd))
+  in loop l []
+
 
 let foo i j =
   for_loop (range i j) (fun k ->
@@ -77,4 +82,7 @@ let foo i j =
 (* let _ = assert (foo 1 10 = List.map (fun k -> k + k) (range 1 10)) *)
 
 let pythagorean_triples (n : int) : (int * int * int) list =
-  assert false (* TODO *)
+
+  
+   
+      
