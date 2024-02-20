@@ -79,10 +79,45 @@
 *)
 
 let rec map2 (f : 'a -> 'b -> 'c) (l : 'a list) (r : 'b list) : 'c list =
-  assert false (* TODO *)
+  (* creates a pointwise combined list *)
+  let rec loop list1 list2 new_list =
+    match list1, list2 with
+    | [], [] -> new_list
+    | [], hd::tl -> new_list
+    | hd::tl, [] -> new_list
+    | hd1::tl1, hd2::tl2 -> loop tl1 tl2 (new_list@[[hd1;hd2]])
+  in
+  (* goes through all the functions in order *)
+  let rec go f list new_list=
+    match list with
+    | [] -> new_list
+    | hd::tl -> 
+      (match hd with
+      | [] -> new_list
+      | hd1::[] -> new_list
+      | hd1::hd2::tl2 -> go f tl (new_list@[f hd1 hd2]))
+    in go f (loop l r []) []
 
 let consecutives (len : int) (l : 'a list) : 'a list list =
-  assert false (* TODO *)
+  (* creates sublist of len n *)
+  let rec make_sub_list n x new_list =
+    if n <= 0 then new_list
+    else 
+      (match x with
+      | [] -> new_list
+      | hd::tl -> make_sub_list (n-1) tl (new_list@[hd]))
+  in
+  (* loops through each element in list and calls make_sub_list *)
+  let rec loop_list list new_list =
+    match list with
+    | [] -> new_list
+    | hd::tl -> 
+      if (List.length list) < len then new_list
+      else loop_list tl (new_list@[(make_sub_list len list [])])
+  in
+  if (List.length l) <= len then [l]
+  else loop_list l []
+
 
 let list_conv
     (f : 'a list -> 'b list -> 'c)
@@ -91,7 +126,13 @@ let list_conv
   List.map (f l) (consecutives (List.length l) r)
 
 let poly_mult_helper (u : int list) (v : int list) : int =
-  assert false (* TODO *)
+  let rec dot_product a b =
+    match a,b with 
+    | [], []-> 0
+    | h1::t1, h2::t2 -> (h1 * h2) + dot_product t1 t2
+    | _, _ -> failwith "Dot product, wrong sizes"
+  in 
+  dot_product u (List.rev v)
 
 let poly_mult (p : int list) (q : int list) : int list =
   let padding = List.init (List.length p - 1) (fun _ -> 0) in
