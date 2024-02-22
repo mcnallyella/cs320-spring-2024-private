@@ -6,8 +6,8 @@
      def pythagoraean_triples(n):
          out = []
          for i in range(1, n):
-             for j in range(j + 1, n):
-                 for k in range(k + 1, n):
+             for j in range(i + 1, n):
+                 for k in range(j + 1, n):
                      if i * i + j * j == k * k:
                          out.append((i, j, k))
          return out
@@ -82,5 +82,5 @@ let foo i j =
 (* let _ = assert (foo 1 10 = List.map (fun k -> k + k) (range 1 10)) *)
 
 let pythagorean_triples (n : int) : (int * int * int) list =
-  
+  assert false;;
       

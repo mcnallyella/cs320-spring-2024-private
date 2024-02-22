@@ -63,35 +63,39 @@ let walks
       if n <= 0 then []
       else x :: make_list (n - 1) x
     in
+    let check_walk i j =
+      (g (i) (j)) = true  
+    in
     (* goes through all the functions in order *)
-  let rec find_endpoint functions current_x=
+  let rec find_endpoint functions current_x is_valid =
     match functions with
     | [] -> current_x
-    | hd :: tl -> find_endpoint tl (hd current_x)
+    | hd :: tl -> 
+      if is_valid = false then None
+      else if check_walk current_x (hd current_x) then find_endpoint tl (hd current_x) true
+      else None
   in
+  
     let rec loop_paths paths output_points =
       match paths with 
       | [] -> output_points
-      | hd::tl ->  let (path, start) = hd in loop_paths tl output_points@((find_endpoint (make_list len path) start)::output_points)
+      | hd::tl ->  let (path, start) = hd in 
+        match (find_endpoint (make_list len path) start true) with
+        | Some end_point -> loop_paths tl output_points@(end_point::output_points)
+        | None -> loop_paths tl output_points
       (* find endpoint, check endpoint, add to output_points, loop again*)
-  in 
-    let rec check_paths output_points new_points=
-      match output_points with
-      | [] -> new_points
-      | [hd] -> 
-        (match new_points with
-        | [] -> output_points
-        | hd::tl ->  if (g (hd) (List.hd output_points)) = true then new_points@output_points
-        else new_points)
-      | hd1::hd2::tl -> 
-        if (g (hd1) (hd2)) = true then check_paths tl (new_points@[hd1;hd2])
-        else 
-          (match tl with
-          | [] -> new_points
-          | hd::tail -> if (g (hd1) (hd)) = true then check_paths tail (new_points@[hd1;hd])
-            else if (g (hd2) (hd)) = true then check_paths tail (new_points@[hd2;hd])
-            else check_paths tail (new_points))
-    in check_paths (List.rev (loop_paths paths_starts [])) []
+    in loop_paths (paths_starts []) []
+
+
+    
+
+
+
+    
+
+
+
+     (* make sure each walk in each path is valid in g instead *)
    
    
 
