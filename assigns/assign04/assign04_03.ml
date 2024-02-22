@@ -82,5 +82,13 @@ let foo i j =
 (* let _ = assert (foo 1 10 = List.map (fun k -> k + k) (range 1 10)) *)
 
 let pythagorean_triples (n : int) : (int * int * int) list =
-  assert false;;
-      
+  let pythag i j k =
+    if i * i + j * j = k * k then [(i, j, k)] else []
+  in
+  let k i j = 
+    for_loop (range (j + 1) n) (fun k -> pythag i j k)
+  in
+  let j i =
+    for_loop (range (i + 1) n) (fun j -> k i j)
+  in
+  for_loop (range 1 n) j
