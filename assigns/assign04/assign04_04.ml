@@ -82,10 +82,10 @@ let rec map2 (f : 'a -> 'b -> 'c) (l : 'a list) (r : 'b list) : 'c list =
   (* creates a pointwise combined list *)
   let rec loop list1 list2 new_list =
     match list1, list2 with
-    | [], [] -> new_list
-    | [], hd::tl -> new_list
-    | hd::tl, [] -> new_list
-    | hd1::tl1, hd2::tl2 -> loop tl1 tl2 (new_list@[[hd1;hd2]])
+    | [], [] -> List.rev new_list
+    | [], hd::tl -> List.rev new_list
+    | hd::tl, [] -> List.rev new_list
+    | hd1::tl1, hd2::tl2 -> loop tl1 tl2 ([hd1;hd2]::new_list)
   in
   (* goes through all the functions in order *)
   let rec go f list new_list=
@@ -93,27 +93,27 @@ let rec map2 (f : 'a -> 'b -> 'c) (l : 'a list) (r : 'b list) : 'c list =
     | [] -> new_list
     | hd::tl -> 
       (match hd with
-      | [] -> new_list
-      | hd1::[] -> new_list
-      | hd1::hd2::tl2 -> go f tl (new_list@[f hd1 hd2]))
+      | [] -> List.rev new_list
+      | hd1::[] -> List.rev new_list
+      | hd1::hd2::tl2 -> go f tl ((f hd1 hd2)::new_list))
     in go f (loop l r []) []
 
 let consecutives (len : int) (l : 'a list) : 'a list list =
   (* creates sublist of len n *)
   let rec make_sub_list n x new_list =
-    if n <= 0 then new_list
+    if n <= 0 then List.rev new_list
     else 
       (match x with
-      | [] -> new_list
-      | hd::tl -> make_sub_list (n-1) tl (new_list@[hd]))
+      | [] -> List.rev new_list
+      | hd::tl -> make_sub_list (n-1) tl (hd::new_list))
   in
   (* loops through each element in list and calls make_sub_list *)
   let rec loop_list list new_list =
     match list with
-    | [] -> new_list
+    | [] -> List.rev new_list
     | hd::tl -> 
       if (List.length list) < len then new_list
-      else loop_list tl (new_list@[(make_sub_list len list [])])
+      else loop_list tl ((make_sub_list len list [])::new_list)
   in
   if (List.length l) <= len then [l]
   else loop_list l []
@@ -137,4 +137,4 @@ let poly_mult_helper (u : int list) (v : int list) : int =
 let poly_mult (p : int list) (q : int list) : int list =
   let padding = List.init (List.length p - 1) (fun _ -> 0) in
   let padded_q = padding @ q @ padding in
-  list_conv poly_mult_helper p padded_q
+  List.rev (list_conv poly_mult_helper p padded_q)
