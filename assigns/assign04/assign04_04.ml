@@ -80,23 +80,10 @@
 
 let rec map2 (f : 'a -> 'b -> 'c) (l : 'a list) (r : 'b list) : 'c list =
   (* creates a pointwise combined list *)
-  let rec loop list1 list2 new_list =
-    match list1, list2 with
-    | [], [] -> List.rev new_list
-    | [], hd::tl -> List.rev new_list
-    | hd::tl, [] -> List.rev new_list
-    | hd1::tl1, hd2::tl2 -> loop tl1 tl2 ([hd1;hd2]::new_list)
-  in
-  (* goes through all the functions in order *)
-  let rec go f list new_list=
-    match list with
-    | [] -> new_list
-    | hd::tl -> 
-      (match hd with
-      | [] -> List.rev new_list
-      | hd1::[] -> List.rev new_list
-      | hd1::hd2::tl2 -> go f tl ((f hd1 hd2)::new_list))
-    in go f (loop l r []) []
+  match l, r with
+  | [], _ -> []
+  | _, [] -> []  
+  | hd1::tl1, hd2::tl2 -> (f hd1 hd2) :: map2 f tl1 tl2  
 
 let consecutives (len : int) (l : 'a list) : 'a list list =
   (* creates sublist of len n *)
