@@ -106,17 +106,19 @@ type token
   | EOFT            (* end of file *)
 
 let next_token (cs : char list) : (token * char list) option =
-  let rec consume_alphanum acc chars =
-    match chars with
-    | c :: tail when is_alphanum c -> consume_alphanum (c :: acc) tail
-    | _ -> (List.rev acc, chars)
+  let rec find_last_whitespace cs =
+    match cs with
+    | [] -> []
+    | head::tail -> if is_alphanum head then head::find_last_whitespace tail else []
   in
-  match cs with
-  | [] -> None
-  | '.' :: tail -> Some (PdT, tail)
-  | ':' :: '=' :: tail -> Some (EqT, tail)
-  | '<' :: tail ->
-   
+  let rec find_first_whitespace cs =
+    match cs with 
+    | [] -> None
+    | '.' :: tail -> Some (PdT, tail)
+    | ':' :: '=' :: tail -> Some (EqT, tail)
+    | '<' :: tail -> Some (NtmT '<'::find_last_whitespace tail::'>')
+    | head::tail -> if is_alphanum head then Some (TmT, find_last_whitespace head::tail) 
+  in find_first_whitespace cs
     
 
 let tokenize (s : string) : (token list) option =
