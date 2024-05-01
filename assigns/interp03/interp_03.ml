@@ -509,6 +509,7 @@ type lexpr
   | Fun of ident * lexpr
   | App of lexpr * lexpr
   | Trace of lexpr
+  
 
 
   (* helper func to convert expr to equivalent lexpr *)
@@ -535,17 +536,19 @@ type lexpr
   
 (* return unit type if no top-level expr *)
   (* else let prog be a func or list of funcs and fold right to convert rest *)
-let desugar (p : top_prog) : lexpr =
+let rec desugar (p : top_prog) : lexpr =
   match p with
-  | [] -> Unit  (* if no funcs *)
-  | [(f, xs, e)] ->  (* if only one func *)
+  | [] -> Unit  (* if no functions *)
+  | [(f, xs, e)] ->  (* if only one function *)
     Fun (f, List.fold_right (fun x acc -> Fun (x, acc)) xs (convert_expr_to_lexpr e))
-  | multiple_funcs -> 
-    List.fold_right (fun (f, xs, e) acc -> 
-      Fun (f, List.fold_right (fun x acc' -> Fun (x, acc')) xs (convert_expr_to_lexpr e))
-    ) multiple_funcs Unit (* if mulitple funcs*)
-    
-      (* translates each individual lexpr in prog to equivalent stack expr *)
+  | (f, xs, e)::body -> 
+    App (
+      Fun (f, List.fold_right (fun x acc -> Fun (x, acc)) xs (convert_expr_to_lexpr e)),
+      desugar body
+    )
+
+
+
 let rec translate (e : lexpr) : stack_prog =  (* TODO *)
   match e with
   | Num n -> [Push (Num n)]
@@ -559,7 +562,7 @@ let rec translate (e : lexpr) : stack_prog =  (* TODO *)
   | Ife (condition, e1, e2) ->
     translate condition @ [If (translate e1, translate e2)]
   | Fun (x, e) ->
-    [Fun (x, translate e)]
+    [Swap] @ [Assign x] @ [Fun (x, translate e)]
   | App (e1, e2) ->
     translate e1 @ translate e2 @ [Call]
   | Trace e ->
@@ -584,7 +587,7 @@ let rec serialize (p : stack_prog) : string =  (* TODO *)
   | Assign x -> "assign " ^ x
   | Lookup x -> "lookup " ^ x
   in
-  String.concat "\n" (List.map string_of_command p)
+  String.concat " " (List.map string_of_command p)
 
 let compile (s : string) : string option =
   match parse_top_prog s with
